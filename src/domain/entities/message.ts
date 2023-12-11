@@ -2,6 +2,7 @@ import {Group} from './group'
 import {User} from './user'
 
 export interface Message {
+    id: string
     content: string
     time: Date
     fromUserId: string
@@ -13,9 +14,12 @@ export interface Message {
 export type Message2Create = Pick<Message, 'content' | 'time'>
 
 export interface GroupMessage
-    extends Pick<Message, 'content' | 'time' | 'fromUser' | 'fromUserId'> {
+    extends Pick<
+        Message,
+        'content' | 'time' | 'fromUser' | 'fromUserId' | 'id'
+    > {
     groupId: string
     group?: Group
 }
 
-export type GroupMessafe2Create = Pick<GroupMessage, 'content' | 'time'>
+export type GroupMessage2Create = Pick<GroupMessage, 'content' | 'time'>
