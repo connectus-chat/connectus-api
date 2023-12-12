@@ -12,6 +12,7 @@ export interface Message {
 }
 
 export type Message2Create = Pick<Message, 'content' | 'time'>
+export type OptionalMessage = Message | undefined | null
 
 export interface GroupMessage
     extends Pick<
@@ -23,3 +24,4 @@ export interface GroupMessage
 }
 
 export type GroupMessage2Create = Pick<GroupMessage, 'content' | 'time'>
+export type OptionalGroupMessage = GroupMessage | undefined | null

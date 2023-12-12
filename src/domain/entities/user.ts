@@ -6,8 +6,8 @@ export interface User {
     username: string
     age: number
     email: string
-    groups?: Group[]
-    friends?: User[]
+    groups: Group[]
+    friends: User[]
 }
 
 export type User2Create = Pick<User, 'name' | 'username' | 'age' | 'email'>

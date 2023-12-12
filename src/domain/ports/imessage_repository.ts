@@ -3,6 +3,8 @@ import {
     GroupMessage2Create,
     Message,
     Message2Create,
+    OptionalGroupMessage,
+    OptionalMessage,
 } from '../entities/message'
 
 export interface IMessageRepository {
@@ -10,7 +12,7 @@ export interface IMessageRepository {
         fromUserId: string,
         toUserId: string,
         newMessage: Message2Create,
-    ): Promise<Message>
+    ): Promise<OptionalMessage>
     fetchAllByFromUserIdAndToUserId(
         fromUserId: string,
         toUserId: string,
@@ -22,6 +24,6 @@ export interface IMessageGroupRepository {
         fromUserId: string,
         groupId: string,
         newMessage: GroupMessage2Create,
-    ): Promise<GroupMessage>
+    ): Promise<OptionalGroupMessage>
     fetchAllByGroupId(groupId: string): Promise<GroupMessage[]>
 }
