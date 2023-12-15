@@ -5,6 +5,14 @@ import {IUserRepository} from '../../../domain/ports/iuser_repository'
 export let users: User[] = []
 
 export class LocalUserRepository implements IUserRepository {
+    async findByUsernameAndPassword(
+        username: string,
+        password: string,
+    ): Promise<OptionalUser> {
+        return users.find(
+            user => user.username === username && user.password === password,
+        )
+    }
     async create(newUser: User2Create): Promise<OptionalUser> {
         const id = randomUUID().toString()
         const user: User = {

@@ -6,6 +6,10 @@ export interface IUserRepository {
     fetchAll(): Promise<User[]>
     findById(id: string): Promise<OptionalUser>
     deleteById(id: string): Promise<OptionalUser>
+    findByUsernameAndPassword(
+        username: string,
+        password: string,
+    ): Promise<OptionalUser>
     follow(id: string, followedUserId: string): Promise<OptionalUser>
     unfollow(id: string, followedUserId: string): Promise<OptionalUser>
 }

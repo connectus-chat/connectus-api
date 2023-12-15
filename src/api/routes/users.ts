@@ -5,6 +5,7 @@ import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
 import {FetchAllUseCase} from '../../domain/use_cases/users/fetch_all'
 import {FindByIdUseCase} from '../../domain/use_cases/users/find_by_id'
 import {FollowUseCase} from '../../domain/use_cases/users/follow'
+import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
 import {LocalUserRepository} from '../services/repositories/local_user_repository'
@@ -30,6 +31,26 @@ UserRoutes.post(
             const createUC = new CreateUseCase(userRepository)
             const createdUser = await createUC.execute(data)
             return createdUser
+        })
+    },
+)
+
+UserRoutes.post(
+    '/users/login',
+    async (
+        req: Request<
+            unknown,
+            unknown,
+            Pick<User2Create, 'username' | 'password'>
+        >,
+        response: Response,
+    ) => {
+        return await preventError(response, async () => {
+            const {password, username} = req.body
+            const loginUC = new LoginUseCase(userRepository)
+            const authenticatedUser = await loginUC.execute(username, password)
+            response.cookie('Authorization', authenticatedUser.id)
+            return authenticatedUser
         })
     },
 )
