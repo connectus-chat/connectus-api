@@ -27,7 +27,7 @@ export class WebsocketEventHandlerService implements IEventHandlerService {
         this.io.emit(topic, data)
     }
 
-    subscribe<DataResponse>(
+    on<DataResponse>(
         topic: string,
         callback: (data: DataResponse) => unknown,
     ): void {
