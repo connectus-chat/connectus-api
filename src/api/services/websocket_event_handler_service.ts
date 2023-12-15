@@ -23,6 +23,14 @@ import {IEventHandlerService} from '../../domain/ports/ievent_handler_service'
 export class WebsocketEventHandlerService implements IEventHandlerService {
     constructor(private readonly io: Server) {}
 
+    emit2Room<DataRequest>(
+        topic: string,
+        room: string | string[],
+        data: DataRequest,
+    ): void {
+        this.io.to(room).emit(topic, data)
+    }
+
     emit<DataRequest>(topic: string, data: DataRequest): void {
         this.io.emit(topic, data)
     }
