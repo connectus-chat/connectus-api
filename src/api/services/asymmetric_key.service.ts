@@ -1,9 +1,9 @@
-import * as crypto from 'crypto';
+import { KeyObject, constants, generateKeyPairSync, privateDecrypt, publicEncrypt } from 'crypto';
 import { AsymmetricKeys, IAsymmetricKeyService } from '../../domain/ports/iasymmetric_key_service';
 
-export class RSAService implements IAsymmetricKeyService {
+export class AsymmetricKeyService implements IAsymmetricKeyService {
     generateKeyPair(): AsymmetricKeys  {
-        const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+        const { publicKey, privateKey } = generateKeyPairSync("rsa", {
             modulusLength: 2048,
           });
         return {
@@ -11,11 +11,11 @@ export class RSAService implements IAsymmetricKeyService {
             privateKey: privateKey,
         }
     }
-    encrypt(publicKey: crypto.KeyObject, message: string): string {
-        const encryptedMessage = crypto.publicEncrypt(
+    encrypt(publicKey: KeyObject, message: string): string {
+        const encryptedMessage = publicEncrypt(
             {
                 key: publicKey,
-                padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+                padding: constants.RSA_PKCS1_OAEP_PADDING,
                 oaepHash: 'sha256'
             },
             Buffer.from(message)
@@ -23,16 +23,15 @@ export class RSAService implements IAsymmetricKeyService {
         return encryptedMessage.toString('base64');
     }
 
-    decrypt(privateKey: crypto.KeyObject, encryptedMessage: string): string {
-        const decryptedData = crypto.privateDecrypt(
+    decrypt(privateKey: KeyObject, encryptedMessage: string): string {
+        const decryptedData = privateDecrypt(
             {
               key: privateKey,
-              padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+              padding: constants.RSA_PKCS1_OAEP_PADDING,
               oaepHash: "sha256",
             },
             Buffer.from(encryptedMessage, 'base64')
           );
-
         return decryptedData.toString();
     }
 

@@ -1,5 +1,5 @@
-import { RSAService } from '../src/api/services/rsa.service';
-import { TwofishService } from '../src/api/services/twofish.service';
+import { AsymmetricKeyService } from '../src/api/services/asymmetric_key.service';
+import { SymmetricKeyService } from '../src/api/services/symmetric_key.service';
 import { AsymmetricKeys } from '../src/domain/ports/iasymmetric_key_service';
 import { CreateRSAKeyPairs } from '../src/domain/use_cases/rsa_crypto/create_rsa_key_pairs';
 import { DecryptTwofishKey } from '../src/domain/use_cases/rsa_crypto/decrypt_twofish_key';
@@ -8,12 +8,14 @@ import { CreateTwofishKey } from '../src/domain/use_cases/twofish_crypto/create_
 
 describe('RSA', () => {
     let keyPair: AsymmetricKeys;
-    const encryptUC = new EncryptTwofishKey(new RSAService());
-    const decryptUC = new DecryptTwofishKey(new RSAService());
-    const createTwofishKeyUC = new CreateTwofishKey(new TwofishService());
+    const rsaService = new AsymmetricKeyService();
+    const encryptUC = new EncryptTwofishKey(rsaService);
+    const decryptUC = new DecryptTwofishKey(rsaService);
+    const twofishService = new SymmetricKeyService();
+    const createTwofishKeyUC = new CreateTwofishKey(twofishService);
 
     beforeAll(() => {
-        const createKeyPair = new CreateRSAKeyPairs(new RSAService());
+        const createKeyPair = new CreateRSAKeyPairs(new AsymmetricKeyService());
         keyPair = createKeyPair.execute();
     });
     it('Should encrypt a message with RSA', () => {
