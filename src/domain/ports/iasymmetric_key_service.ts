@@ -1,10 +1,11 @@
+import { KeyObject } from 'crypto';
 export interface AsymmetricKeys {
-    privateKey: string
-    publicKey: string
+    privateKey: KeyObject;
+    publicKey: KeyObject;
 }
 
 export interface IAsymmetricKeyService {
-    generateKeyPair(): Promise<AsymmetricKeys>
-    encrypt(publicKey: string, message: string): Promise<string>
-    decrypt(privateKey: string, encryptedMessage: string): Promise<string>
+    generateKeyPair(): AsymmetricKeys;
+    encrypt(publicKey: KeyObject, message: string): string;
+    decrypt(privateKey: KeyObject, encryptedMessage: string): string;
 }

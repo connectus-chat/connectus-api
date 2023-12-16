@@ -3,7 +3,7 @@ export interface SymmetricKey {
 }
 
 export interface ISymmetricKeyService {
-    generateKey(): Promise<SymmetricKey>
-    encrypt(key: string, message: string): Promise<string>
-    decrypt(key: string, encryptedMessage: string): Promise<string>
+    generateKey(): SymmetricKey
+    encrypt(key: string, message: string): string;
+    decrypt(key: string, encryptedMessage: string): string;
 }
