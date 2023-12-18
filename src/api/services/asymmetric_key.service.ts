@@ -11,6 +11,7 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
             privateKey: privateKey,
         }
     }
+    
     encrypt(publicKey: KeyObject, message: string): string {
         const encryptedMessage = publicEncrypt(
             {
@@ -34,5 +35,4 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
           );
         return decryptedData.toString();
     }
-
 } 
