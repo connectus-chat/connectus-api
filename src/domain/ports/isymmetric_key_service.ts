@@ -1,9 +1,11 @@
+import { KeyObject } from "crypto";
+
 export interface SymmetricKey {
     key: string
 }
 
 export interface ISymmetricKeyService {
     generateKey(): SymmetricKey
-    encrypt(key: string, message: string): string;
-    decrypt(key: string, encryptedMessage: string): string;
+    encrypt(key: KeyObject, message: string): string;
+    decrypt(key: KeyObject, encryptedMessage: string): string;
 }
