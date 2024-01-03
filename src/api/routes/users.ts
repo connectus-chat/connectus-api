@@ -1,5 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {User2Create, User2Update} from '../../domain/entities/user'
+import {FindPrivateKeyUseCase} from '../../domain/use_cases/credentials/find_private_key'
 import {CreateUseCase} from '../../domain/use_cases/users/create'
 import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
 import {FetchAllUseCase} from '../../domain/use_cases/users/fetch_all'
@@ -8,12 +9,14 @@ import {FollowUseCase} from '../../domain/use_cases/users/follow'
 import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
+import {LocalCredentialsRepository} from '../services/repositories/local_credentials_repository'
 import {LocalUserRepository} from '../services/repositories/local_user_repository'
 import {preventError} from './preventError'
 
 export const UserRoutes = Router()
 
 const userRepository = new LocalUserRepository()
+const credentialsRepository = new LocalCredentialsRepository()
 
 UserRoutes.get('/users', async (_: Request, response: Response) => {
     return await preventError(response, async () => {
@@ -75,6 +78,20 @@ UserRoutes.get(
             const findUC = new FindByIdUseCase(userRepository)
             const foundUser = await findUC.execute(id)
             return foundUser
+        })
+    },
+)
+
+UserRoutes.get(
+    '/users/:id/auth/private',
+    async (request: Request<{id: string}>, response: Response) => {
+        return await preventError(response, async () => {
+            const {id} = request.params
+            const findPrivateKeyUC = new FindPrivateKeyUseCase(
+                credentialsRepository,
+            )
+            const privateKey = await findPrivateKeyUC.execute(id)
+            return {privateKey}
         })
     },
 )
