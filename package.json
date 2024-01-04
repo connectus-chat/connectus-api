@@ -2,9 +2,9 @@
     "name": "connectus-api",
     "version": "1.0.0",
     "description": "🔐 A Node.js Web API to chat safely",
-    "main": "index.js",
+    "main": "./src/index.ts",
     "scripts": {
-        "dev": "nodemon src/index.ts",
+        "dev": "tsnd src/index.ts",
         "test": "jest"
     },
     "author": "Connectus Team",
@@ -17,8 +17,8 @@
         "express": "^4.18.2",
         "node-rsa": "^1.1.1",
         "socket.io": "^4.7.2",
-        "twofish": "^1.0.1",
-        "twofish-ts": "^1.0.2"
+        "ts-node-dev": "^2.0.0",
+        "twofish": "^1.0.1"
     },
     "devDependencies": {
         "@types/cookie-parser": "^1.4.6",
