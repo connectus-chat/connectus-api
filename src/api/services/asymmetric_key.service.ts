@@ -1,38 +1,53 @@
-import { KeyObject, constants, generateKeyPairSync, privateDecrypt, publicEncrypt } from 'crypto';
-import { AsymmetricKeys, IAsymmetricKeyService } from '../../domain/ports/iasymmetric_key_service';
+import {
+    constants,
+    generateKeyPairSync,
+    privateDecrypt,
+    publicEncrypt,
+} from 'crypto'
+import {
+    AsymmetricKeys,
+    IAsymmetricKeyService,
+} from '../../domain/ports/iasymmetric_key_service'
 
 export class AsymmetricKeyService implements IAsymmetricKeyService {
-    generateKeyPair(): AsymmetricKeys  {
-        const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+    generateKeyPair(): AsymmetricKeys {
+        const {publicKey, privateKey} = generateKeyPairSync('rsa', {
             modulusLength: 2048,
-          });
+        })
         return {
-            publicKey: publicKey,
-            privateKey: privateKey,
+            publicKey: publicKey
+                .export({type: 'pkcs1', format: 'pem'})
+                .toString(),
+            privateKey: privateKey
+                .export({
+                    type: 'pkcs1',
+                    format: 'pem',
+                })
+                .toString(),
         }
     }
-    
-    encrypt(publicKey: KeyObject, message: string): string {
+
+    encrypt(publicKey: string, message: string): string {
         const encryptedMessage = publicEncrypt(
             {
                 key: publicKey,
                 padding: constants.RSA_PKCS1_OAEP_PADDING,
-                oaepHash: 'sha256'
+                oaepHash: 'sha256',
             },
-            Buffer.from(message)
+            Buffer.from(message),
         )
-        return encryptedMessage.toString('base64');
+        return encryptedMessage.toString('base64')
     }
 
-    decrypt(privateKey: KeyObject, encryptedMessage: string): string {
+    decrypt(privateKey: string, encryptedMessage: string): string {
         const decryptedData = privateDecrypt(
             {
-              key: privateKey,
-              padding: constants.RSA_PKCS1_OAEP_PADDING,
-              oaepHash: "sha256",
+                key: privateKey,
+                padding: constants.RSA_PKCS1_OAEP_PADDING,
+                oaepHash: 'sha256',
             },
-            Buffer.from(encryptedMessage, 'base64')
-          );
-        return decryptedData.toString();
+            Buffer.from(encryptedMessage, 'base64'),
+        )
+        return decryptedData.toString()
     }
-} 
+}
