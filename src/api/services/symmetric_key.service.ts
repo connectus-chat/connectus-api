@@ -1,5 +1,5 @@
-import {KeyObject, randomBytes} from 'crypto'
-import * as Twofish from 'twofish'
+import {randomBytes} from 'crypto'
+import * as twf from 'twofish'
 import {
     ISymmetricKeyService,
     SymmetricKey,
@@ -10,14 +10,12 @@ export class SymmetricKeyService implements ISymmetricKeyService {
         return {key: randomBytes(64).toString('hex')}
     }
 
-    encrypt(key: KeyObject, message: string): string {
+    encrypt(key: string, message: string): string {
         console.log(key, message)
+        const twofish = twf.twofish()
 
-        const twofish = new Twofish()
-
-        const data = Buffer.from(message, 'utf8')
-        const dataArray = Uint8Array.from(data)
-        const keyArray = Uint8Array.from(key.export())
+        const dataArray = Uint8Array.from(Buffer.from(message, 'utf8'))
+        const keyArray = Uint8Array.from(Buffer.from(key, 'utf-8'))
 
         const cipherText = twofish.encrypt(keyArray, dataArray)
         const encryptedString = cipherText
@@ -27,14 +25,15 @@ export class SymmetricKeyService implements ISymmetricKeyService {
         return encryptedString
     }
 
-    decrypt(key: KeyObject, encryptedMessage: string): string {
+    decrypt(key: string, encryptedMessage: string): string {
         console.log(key, encryptedMessage)
+        console.log(twf)
 
-        const twofish = new Twofish()
+        const twofish = twf.twofish()
 
         const encryptedMessageBuffer = Buffer.from(encryptedMessage, 'utf8')
         const encryptedMessageArray = Uint8Array.from(encryptedMessageBuffer)
-        const keyArray = Uint8Array.from(key.export())
+        const keyArray = Uint8Array.from(Buffer.from(key, 'utf-8'))
 
         const data = twofish.decrypt(keyArray, encryptedMessageArray)
         const decryptedString = data

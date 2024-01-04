@@ -1,10 +1,9 @@
-import { KeyObject } from "crypto";
-import { ISymmetricKeyService } from "../../ports/isymmetric_key_service";
+import {ISymmetricKeyService} from '../../ports/isymmetric_key_service'
 
 export class DecryptTwofishKey {
-    constructor (private readonly service: ISymmetricKeyService) {}
+    constructor(private readonly service: ISymmetricKeyService) {}
 
-    execute(symmetricKey: KeyObject, encryptedMessage: string) {
-        return this.service.decrypt(symmetricKey, encryptedMessage);
+    execute(symmetricKey: string, encryptedMessage: string) {
+        return this.service.decrypt(symmetricKey, encryptedMessage)
     }
 }
