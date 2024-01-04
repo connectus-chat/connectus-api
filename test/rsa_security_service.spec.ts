@@ -2,15 +2,15 @@ import { AsymmetricKeyService } from '../src/api/services/asymmetric_key.service
 import { SymmetricKeyService } from '../src/api/services/symmetric_key.service';
 import { AsymmetricKeys } from '../src/domain/ports/iasymmetric_key_service';
 import { CreateRSAKeyPairs } from '../src/domain/use_cases/rsa_crypto/create_rsa_key_pairs';
-import { DecryptTwofishKey } from '../src/domain/use_cases/rsa_crypto/decrypt_twofish_key';
-import { EncryptTwofishKey } from '../src/domain/use_cases/rsa_crypto/encrypt_twofish_key';
+import { Decrypt } from '../src/domain/use_cases/rsa_crypto/decrypt';
+import { Encrypt } from '../src/domain/use_cases/rsa_crypto/encrypt';
 import { CreateTwofishKey } from '../src/domain/use_cases/twofish_crypto/create_twofish_key';
 
 describe('RSA', () => {
     let keyPair: AsymmetricKeys;
     const rsaService = new AsymmetricKeyService();
-    const encryptUC = new EncryptTwofishKey(rsaService);
-    const decryptUC = new DecryptTwofishKey(rsaService);
+    const encryptUC = new Encrypt(rsaService);
+    const decryptUC = new Decrypt(rsaService);
     const twofishService = new SymmetricKeyService();
     const createTwofishKeyUC = new CreateTwofishKey(twofishService);
 

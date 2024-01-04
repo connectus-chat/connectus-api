@@ -1,6 +1,6 @@
-import {IAsymmetricKeyService} from '../../ports/iasymmetric_key_service'
+import { IAsymmetricKeyService } from '../../ports/iasymmetric_key_service'
 
-export class EncryptTwofishKey {
+export class Encrypt {
     constructor(private readonly service: IAsymmetricKeyService) {}
 
     execute(publicKey: string, message: string) {

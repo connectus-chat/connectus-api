@@ -5,8 +5,7 @@ import { AsymmetricKeyService } from './api/services/asymmetric_key.service'
 import { LocalCredentialsRepository } from './api/services/repositories/local_credentials_repository'
 import { SymmetricKeyService } from './api/services/symmetric_key.service'
 import { FindPublicKeyUseCase } from './domain/use_cases/credentials/find_public_key'
-import { DecryptTwofishKey } from './domain/use_cases/rsa_crypto/decrypt_twofish_key'
-import { EncryptTwofishKey } from './domain/use_cases/rsa_crypto/encrypt_twofish_key'
+import { Encrypt } from './domain/use_cases/rsa_crypto/encrypt'
 import { CreateTwofishKey } from './domain/use_cases/twofish_crypto/create_twofish_key'
 
 export function createWebsocketServer(app: express.Express) {
@@ -48,13 +47,13 @@ export function setDefaultEvents(io: Server) {
 
             // Encrypt session key with public keys
             const asymmetricService = new AsymmetricKeyService()
-            const encryptUC = new EncryptTwofishKey(asymmetricService)
-            const decryptUC = new DecryptTwofishKey(asymmetricService)
+            const encryptUC = new Encrypt(asymmetricService)
+            // const decryptUC = new Decrypt(asymmetricService)
             const userEncryptedSessionKey = encryptUC.execute(
                 publicKeyUser,
                 sessionKey,
             )
-            const friendEncryptedSessionKey = decryptUC.execute(
+            const friendEncryptedSessionKey = encryptUC.execute(
                 publicKeyFriend,
                 sessionKey,
             )
