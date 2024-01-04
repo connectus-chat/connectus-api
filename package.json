@@ -10,6 +10,7 @@
     "author": "Connectus Team",
     "license": "ISC",
     "dependencies": {
+        "@prisma/client": "^5.7.0",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
         "crypto": "^1.0.1",

@@ -9,3 +9,59 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       String   @id @map("id")
+  name     String
+  username String   @unique
+  password String
+  age      Int
+  email    String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relatioships
+  groups       Group[]  @relation("UserGroups")
+  friends      User[]   @relation("friends")
+  friendOf     User[]   @relation("friends")
+  messagesFrom Message[]   @relation("MessageFromUser")
+  messagesTo   Message[]    @relation("MessageToUser")
+  adminIn      Group[]      @relation("GroupAdmin")
+  credentials Credential?   @relation("UserCredentials")
+}
+
+model Group {
+  id          String   @id @map("id")
+  adminId     String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // relationships
+  admin        User     @relation("GroupAdmin", fields: [adminId], references: [id])
+  participants User[]   @relation("UserGroups")
+}
+
+model Message {
+  id            String   @id @map("id")
+  content       String
+  time          DateTime
+  fromUserId    String
+  toUserId      String
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // relationships
+  fromUser User @relation("MessageFromUser", fields: [fromUserId], references: [id])
+  toUser   User @relation("MessageToUser", fields: [toUserId], references: [id])
+}
+
+model Credential {
+  privateKey String
+  publicKey  String
+  userId     String  @id @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // relationship
+  user User @relation("UserCredentials", fields: [userId], references: [id])
+}

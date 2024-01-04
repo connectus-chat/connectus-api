@@ -2,9 +2,9 @@ import {
     Credentials,
     Credentials2Create,
 } from '../../../domain/entities/credentials'
-import {HttpError} from '../../../domain/errors/http_error'
-import {ICredentialsRepository} from '../../../domain/ports/icredentials_repository'
-import {users} from './local_user_repository'
+import { HttpError } from '../../../domain/errors/http_error'
+import { ICredentialsRepository } from '../../../domain/ports/icredentials_repository'
+import { users } from './local_user_repository'
 
 export const credentials: Credentials[] = []
 
