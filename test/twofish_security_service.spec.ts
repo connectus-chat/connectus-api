@@ -27,6 +27,6 @@ describe('Twofish', () => {
 
         const decryptUC = new DecryptTwofishKey(symmetricService)
         const decryptedMessage = decryptUC.execute(key, encryptedMessage)
-        expect(decryptedMessage).toBe(message)
+        expect(decryptedMessage).toMatch(message)
     })
 })

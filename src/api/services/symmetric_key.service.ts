@@ -18,6 +18,7 @@ export class SymmetricKeyService implements ISymmetricKeyService {
         const keyArray = Uint8Array.from(Buffer.from(key, 'utf-8'))
 
         const cipherText = twofish.encrypt(keyArray, dataArray)
+        
         const encryptedString = cipherText
             .map((x: number) => x.toString(16).padStart(2, '0'))
             .join('')
@@ -27,19 +28,27 @@ export class SymmetricKeyService implements ISymmetricKeyService {
 
     decrypt(key: string, encryptedMessage: string): string {
         console.log(key, encryptedMessage)
-        console.log(twf)
 
         const twofish = twf.twofish()
-
-        const encryptedMessageBuffer = Buffer.from(encryptedMessage, 'utf8')
-        const encryptedMessageArray = Uint8Array.from(encryptedMessageBuffer)
+        const encryptedMessageArray = this.hexStringToByteArray(encryptedMessage)
         const keyArray = Uint8Array.from(Buffer.from(key, 'utf-8'))
 
         const data = twofish.decrypt(keyArray, encryptedMessageArray)
-        const decryptedString = data
-            .map((x: number) => String.fromCharCode(x))
+        
+        const decryptedHex = data
+            .map((x: number) => x.toString(16).padStart(2, '0'))
             .join('')
+        
+        const decryptedString = (new TextDecoder("utf-8")).decode(new Uint8Array(decryptedHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16))))
 
         return decryptedString
     }
+
+    hexStringToByteArray(hexString) {
+        const byteArray = new Uint8Array(hexString.length / 2);
+        for (let i = 0; i < byteArray.length; i++) {
+          byteArray[i] = parseInt(hexString.slice(i * 2, i * 2 + 2), 16);
+        }
+        return byteArray;
+      }
 }
