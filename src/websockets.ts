@@ -1,12 +1,12 @@
 import express from 'express'
-import { createServer } from 'http'
-import { Server } from 'socket.io'
-import { AsymmetricKeyService } from './api/services/asymmetric_key.service'
-import { LocalCredentialsRepository } from './api/services/repositories/local_credentials_repository'
-import { SymmetricKeyService } from './api/services/symmetric_key.service'
-import { FindPublicKeyUseCase } from './domain/use_cases/credentials/find_public_key'
-import { Encrypt } from './domain/use_cases/rsa_crypto/encrypt'
-import { CreateTwofishKey } from './domain/use_cases/twofish_crypto/create_twofish_key'
+import {createServer} from 'http'
+import {Server} from 'socket.io'
+import {AsymmetricKeyService} from './api/services/asymmetric_key.service'
+import {LocalCredentialsRepository} from './api/services/repositories/local_credentials_repository'
+import {SymmetricKeyService} from './api/services/symmetric_key.service'
+import {FindPublicKeyUseCase} from './domain/use_cases/credentials/find_public_key'
+import {Encrypt} from './domain/use_cases/rsa_crypto/encrypt'
+import {CreateTwofishKey} from './domain/use_cases/twofish_crypto/create_twofish_key'
 
 export function createWebsocketServer(app: express.Express) {
     const server = createServer(app)
@@ -45,6 +45,8 @@ export function setDefaultEvents(io: Server) {
             )
             const sessionKey = generateSymmetricKeyUC.execute().key
 
+            console.log('[WS] Nova chave de sessão gerada: ', sessionKey)
+
             // Encrypt session key with public keys
             const asymmetricService = new AsymmetricKeyService()
             const encryptUC = new Encrypt(asymmetricService)
@@ -58,12 +60,22 @@ export function setDefaultEvents(io: Server) {
                 sessionKey,
             )
 
+            console.log(
+                '[WS] Criptografando chave do usuário: ',
+                userEncryptedSessionKey,
+            )
+
+            console.log(
+                '[WS] Criptografando chave do amigo: ',
+                friendEncryptedSessionKey,
+            )
+
             // Emit session keys to your respective owner
             io.to(`${id}:${friendId}`).emit('set-session-key', {
-                userEncryptedSessionKey,
+                encryptedSessionKey: userEncryptedSessionKey,
             })
             io.to(`${friendId}:${id}`).emit('set-session-key', {
-                friendEncryptedSessionKey,
+                encryptedSessionKey: friendEncryptedSessionKey,
             })
         })
 
