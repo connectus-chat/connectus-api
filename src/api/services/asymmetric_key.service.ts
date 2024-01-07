@@ -16,11 +16,11 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
         })
         return {
             publicKey: publicKey
-                .export({type: 'pkcs1', format: 'pem'})
+                .export({type: 'spki', format: 'pem'})
                 .toString(),
             privateKey: privateKey
                 .export({
-                    type: 'pkcs1',
+                    type: 'pkcs8',
                     format: 'pem',
                 })
                 .toString(),
