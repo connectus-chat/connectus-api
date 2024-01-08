@@ -3,11 +3,11 @@ import {
     generateKeyPairSync,
     privateDecrypt,
     publicEncrypt,
-} from 'crypto'
+} from 'crypto';
 import {
     AsymmetricKeys,
     IAsymmetricKeyService,
-} from '../../domain/ports/iasymmetric_key_service'
+} from '../../domain/ports/iasymmetric_key_service';
 
 export class AsymmetricKeyService implements IAsymmetricKeyService {
     generateKeyPair(): AsymmetricKeys {
@@ -36,10 +36,12 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
             },
             Buffer.from(message),
         )
+        console.log('Encrypted: ', encryptedMessage);
         return encryptedMessage.toString('base64')
     }
 
     decrypt(privateKey: string, encryptedMessage: string): string {
+        console.log('Encrypted Message:', encryptedMessage);
         const decryptedData = privateDecrypt(
             {
                 key: privateKey,

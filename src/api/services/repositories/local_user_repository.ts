@@ -1,6 +1,6 @@
-import {randomUUID} from 'crypto'
-import {OptionalUser, User, User2Create} from '../../../domain/entities/user'
-import {IUserRepository} from '../../../domain/ports/iuser_repository'
+import { randomUUID } from 'crypto'
+import { OptionalUser, User, User2Create } from '../../../domain/entities/user'
+import { IUserRepository } from '../../../domain/ports/iuser_repository'
 
 export let users: User[] = []
 
