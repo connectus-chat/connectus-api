@@ -5,7 +5,8 @@
     "main": "./src/index.ts",
     "scripts": {
         "dev": "tsnd src/index.ts",
-        "test": "jest"
+        "test": "jest",
+        "db:migrate": "prisma migrate dev"
     },
     "author": "Connectus Team",
     "license": "ISC",
