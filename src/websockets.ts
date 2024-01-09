@@ -1,13 +1,13 @@
 import express from 'express'
-import { createServer } from 'http'
-import { Server } from 'socket.io'
-import { Logger } from './api/services/Logger'
-import { AsymmetricKeyService } from './api/services/asymmetric_key.service'
-import { LocalCredentialsRepository } from './api/services/repositories/local_credentials_repository'
-import { SymmetricKeyService } from './api/services/symmetric_key.service'
-import { FindPublicKeyUseCase } from './domain/use_cases/credentials/find_public_key'
-import { Encrypt } from './domain/use_cases/rsa_crypto/encrypt'
-import { CreateTwofishKey } from './domain/use_cases/twofish_crypto/create_twofish_key'
+import {createServer} from 'http'
+import {Server} from 'socket.io'
+import {Logger} from './api/services/Logger'
+import {AsymmetricKeyService} from './api/services/asymmetric_key.service'
+import {PrismaCredentialsService} from './api/services/prisma/prisma_credentials_service'
+import {SymmetricKeyService} from './api/services/symmetric_key.service'
+import {FindPublicKeyUseCase} from './domain/use_cases/credentials/find_public_key'
+import {Encrypt} from './domain/use_cases/rsa_crypto/encrypt'
+import {CreateTwofishKey} from './domain/use_cases/twofish_crypto/create_twofish_key'
 
 export function createWebsocketServer(app: express.Express) {
     const server = createServer(app)
@@ -26,7 +26,7 @@ export function createWebsocketServer(app: express.Express) {
 
 export function setDefaultEvents(io: Server) {
     io.on('connection', socket => {
-        Logger.websocketLog('Checando banco', 'Novo usuário logado', '');
+        Logger.websocketLog('Checando banco', 'Novo usuário logado', '')
 
         socket.on('join', async (data: {id: string; friendId: string}) => {
             const {id, friendId} = data
@@ -35,7 +35,7 @@ export function setDefaultEvents(io: Server) {
 
             // Find public keys os users
             const findPublicKeyUseCase = new FindPublicKeyUseCase(
-                new LocalCredentialsRepository(),
+                new PrismaCredentialsService(),
             )
             const publicKeyUser = await findPublicKeyUseCase.execute(id)
             const publicKeyFriend = await findPublicKeyUseCase.execute(friendId)
@@ -46,7 +46,11 @@ export function setDefaultEvents(io: Server) {
             )
             const sessionKey = generateSymmetricKeyUC.execute().key
 
-            Logger.cryptoLog('Criptografia da chave Twofish', 'Nova chave de sessão criada', sessionKey);
+            Logger.cryptoLog(
+                'Criptografia da chave Twofish',
+                'Nova chave de sessão criada',
+                sessionKey,
+            )
             // console.log('[WS] Nova chave de sessão gerada: ', sessionKey)
 
             // Encrypt session key with public keys
@@ -62,13 +66,21 @@ export function setDefaultEvents(io: Server) {
                 sessionKey,
             )
 
-            Logger.cryptoLog('Criptografia da chave Twofish', 'Encriptando a chave do usuário', userEncryptedSessionKey);
+            Logger.cryptoLog(
+                'Criptografia da chave Twofish',
+                'Encriptando a chave do usuário',
+                userEncryptedSessionKey,
+            )
             // console.log(
             //     '[WS] Criptografando chave do usuário: ',
             //     userEncryptedSessionKey,
             // )
 
-            Logger.cryptoLog('Criptografia da chave Twofish', 'Encriptando a chave do amigo', friendEncryptedSessionKey);
+            Logger.cryptoLog(
+                'Criptografia da chave Twofish',
+                'Encriptando a chave do amigo',
+                friendEncryptedSessionKey,
+            )
             // console.log(
             //     '[WS] Criptografando chave do amigo: ',
             //     friendEncryptedSessionKey,
@@ -94,9 +106,11 @@ export function setDefaultEvents(io: Server) {
                 // console.log(
                 //     `Recebendo mensagem de ${id} para enviar para ${friendId}`,
                 // )
-                Logger.operationLog('Troca de mensagens', 
-                `Recebendo mensagens do usuário ${id} para o amigo ${friendId}`, 
-                encryptedMessage);
+                Logger.operationLog(
+                    'Troca de mensagens',
+                    `Recebendo mensagens do usuário ${id} para o amigo ${friendId}`,
+                    encryptedMessage,
+                )
                 // console.log(encryptedMessage)
                 io.to(`${friendId}:${id}`).emit('receive-message', {
                     encryptedMessage,
