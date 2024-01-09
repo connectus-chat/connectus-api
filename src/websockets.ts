@@ -4,8 +4,10 @@ import {Server} from 'socket.io'
 import {Logger} from './api/services/Logger'
 import {AsymmetricKeyService} from './api/services/asymmetric_key.service'
 import {PrismaCredentialsService} from './api/services/prisma/prisma_credentials_service'
+import {PrismaMessageRepository} from './api/services/prisma/prisma_message_repository'
 import {SymmetricKeyService} from './api/services/symmetric_key.service'
 import {FindPublicKeyUseCase} from './domain/use_cases/credentials/find_public_key'
+import {CreateMessageUseCase} from './domain/use_cases/messages/create_message'
 import {Encrypt} from './domain/use_cases/rsa_crypto/encrypt'
 import {CreateTwofishKey} from './domain/use_cases/twofish_crypto/create_twofish_key'
 
@@ -114,6 +116,20 @@ export function setDefaultEvents(io: Server) {
                 // console.log(encryptedMessage)
                 io.to(`${friendId}:${id}`).emit('receive-message', {
                     encryptedMessage,
+                })
+            },
+        )
+
+        socket.on(
+            'save-message',
+            async (data: {message: string; id: string; friendId: string}) => {
+                const {id, friendId, message} = data
+                const createUC = new CreateMessageUseCase(
+                    new PrismaMessageRepository(),
+                )
+                await createUC.execute(id, friendId, {
+                    content: message,
+                    time: new Date(),
                 })
             },
         )
