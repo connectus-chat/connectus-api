@@ -36,12 +36,12 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
             },
             Buffer.from(message),
         )
-        console.log('Encrypted: ', encryptedMessage);
+        // console.log('Encrypted: ', encryptedMessage);
         return encryptedMessage.toString('base64')
     }
 
     decrypt(privateKey: string, encryptedMessage: string): string {
-        console.log('Encrypted Message:', encryptedMessage);
+        // console.log('Encrypted Message:', encryptedMessage);
         const decryptedData = privateDecrypt(
             {
                 key: privateKey,

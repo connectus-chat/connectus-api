@@ -1,6 +1,7 @@
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import { Logger } from './api/services/Logger'
 import { AsymmetricKeyService } from './api/services/asymmetric_key.service'
 import { LocalCredentialsRepository } from './api/services/repositories/local_credentials_repository'
 import { SymmetricKeyService } from './api/services/symmetric_key.service'
@@ -25,7 +26,7 @@ export function createWebsocketServer(app: express.Express) {
 
 export function setDefaultEvents(io: Server) {
     io.on('connection', socket => {
-        console.log('[WS] Novo usuário conectado')
+        Logger.websocketLog('Checando banco', 'Novo usuário logado', '');
 
         socket.on('join', async (data: {id: string; friendId: string}) => {
             const {id, friendId} = data
@@ -45,7 +46,8 @@ export function setDefaultEvents(io: Server) {
             )
             const sessionKey = generateSymmetricKeyUC.execute().key
 
-            console.log('[WS] Nova chave de sessão gerada: ', sessionKey)
+            Logger.cryptoLog('Criptografia da chave Twofish', 'Nova chave de sessão criada', sessionKey);
+            // console.log('[WS] Nova chave de sessão gerada: ', sessionKey)
 
             // Encrypt session key with public keys
             const asymmetricService = new AsymmetricKeyService()
@@ -60,15 +62,17 @@ export function setDefaultEvents(io: Server) {
                 sessionKey,
             )
 
-            console.log(
-                '[WS] Criptografando chave do usuário: ',
-                userEncryptedSessionKey,
-            )
+            Logger.cryptoLog('Criptografia da chave Twofish', 'Encriptando a chave do usuário', userEncryptedSessionKey);
+            // console.log(
+            //     '[WS] Criptografando chave do usuário: ',
+            //     userEncryptedSessionKey,
+            // )
 
-            console.log(
-                '[WS] Criptografando chave do amigo: ',
-                friendEncryptedSessionKey,
-            )
+            Logger.cryptoLog('Criptografia da chave Twofish', 'Encriptando a chave do amigo', friendEncryptedSessionKey);
+            // console.log(
+            //     '[WS] Criptografando chave do amigo: ',
+            //     friendEncryptedSessionKey,
+            // )
 
             // Emit session keys to your respective owner
             io.to(`${id}:${friendId}`).emit('set-session-key', {
@@ -87,10 +91,13 @@ export function setDefaultEvents(io: Server) {
                 encryptedMessage: string
             }) => {
                 const {id, friendId, encryptedMessage} = data
-                console.log(
-                    `Recebendo mensagem de ${id} para enviar para ${friendId}`,
-                )
-                console.log(encryptedMessage)
+                // console.log(
+                //     `Recebendo mensagem de ${id} para enviar para ${friendId}`,
+                // )
+                Logger.operationLog('Troca de mensagens', 
+                `Recebendo mensagens do usuário ${id} para o amigo ${friendId}`, 
+                encryptedMessage);
+                // console.log(encryptedMessage)
                 io.to(`${friendId}:${id}`).emit('receive-message', {
                     encryptedMessage,
                 })
