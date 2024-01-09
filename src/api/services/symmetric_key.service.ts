@@ -1,9 +1,10 @@
-import {randomBytes} from 'crypto'
+import { randomBytes } from 'crypto'
 import * as twf from 'twofish'
 import {
     ISymmetricKeyService,
     SymmetricKey,
 } from '../../domain/ports/isymmetric_key_service'
+import { Logger } from './Logger'
 
 export class SymmetricKeyService implements ISymmetricKeyService {
     generateKey(): SymmetricKey {
@@ -11,7 +12,8 @@ export class SymmetricKeyService implements ISymmetricKeyService {
     }
 
     encrypt(key: string, message: string): string {
-        console.log(key, message)
+        // console.log(key, message)
+        Logger.cryptoLog('Encriptando mensagens utilizando RSA...', `Encriptando utilizando a chave ${key}`, `Mensagem: ${message}`)
         const twofish = twf.twofish()
 
         const dataArray = Uint8Array.from(Buffer.from(message, 'utf8'))
@@ -27,7 +29,10 @@ export class SymmetricKeyService implements ISymmetricKeyService {
     }
 
     decrypt(key: string, encryptedMessage: string): string {
-        console.log(key, encryptedMessage)
+        // console.log(key, encryptedMessage)
+        Logger.cryptoLog('Decriptando mensagens utilizando RSA...', 
+        `Decriptando utilizando a chave ${key}`, 
+        `Mensagem encriptada: ${encryptedMessage}`);
 
         const twofish = twf.twofish()
         const encryptedMessageArray = this.hexStringToByteArray(encryptedMessage)
