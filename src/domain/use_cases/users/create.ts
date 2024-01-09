@@ -1,5 +1,3 @@
-import { credentials } from '../../../api/services/repositories/local_credentials_repository';
-import { users } from '../../../api/services/repositories/local_user_repository';
 import { User2Create } from '../../entities/user';
 import { IAsymmetricKeyService } from '../../ports/iasymmetric_key_service';
 import { ICredentialsRepository } from '../../ports/icredentials_repository';
@@ -19,8 +17,6 @@ export class CreateUseCase {
         if (!createdUser) throw new Error('Erro ao criar novo usuário.')
         const createCredential = new CreateCredentials(this.credentialRepository);
         await createCredential.execute(createdUser.id, keyPair);
-        console.log('users: ', users);
-        console.log('credentials: ', credentials);
         return createdUser
     }
 }
