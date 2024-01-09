@@ -21,7 +21,7 @@ describe('Twofish', () => {
     })
 
     it('Should decrypt correctly', () => {
-        const message = 'ola mundo'
+        const message = 'salve'
         const encryptUC = new EncryptTwofishKey(symmetricService)
         const encryptedMessage = encryptUC.execute(key, message)
 
