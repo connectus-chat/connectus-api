@@ -1,6 +1,6 @@
-import { randomUUID } from 'crypto'
-import { OptionalUser, User, User2Create } from '../../../domain/entities/user'
-import { IUserRepository } from '../../../domain/ports/iuser_repository'
+import {randomUUID} from 'crypto'
+import {OptionalUser, User, User2Create} from '../../../domain/entities/user'
+import {IUserRepository} from '../../../domain/ports/iuser_repository'
 
 export let users: User[] = []
 
@@ -61,7 +61,7 @@ export class LocalUserRepository implements IUserRepository {
 
         user = {
             ...user,
-            friends: [...user.friends, followedUser],
+            friends: [...(user.friends || []), followedUser],
         }
         users = [...users.filter(u => u.id !== id), user]
         return user
@@ -75,7 +75,7 @@ export class LocalUserRepository implements IUserRepository {
 
         user = {
             ...user,
-            friends: user.friends.filter(u => u.id !== followedUserId),
+            friends: user.friends?.filter(u => u.id !== followedUserId),
         }
         users = [...users.filter(u => u.id !== id), user]
         return user

@@ -1,13 +1,13 @@
 import {Request, Response, Router} from 'express'
 import {FetchAllUseCase} from '../../domain/use_cases/messages/fetch_all'
 import {FetchAllGroupMessagesUseCase} from '../../domain/use_cases/messages/fetch_all_group_messages'
+import {PrismaMessageRepository} from '../services/prisma/prisma_message_repository'
 import {LocalGroupMessageRepository} from '../services/repositories/local_group_message_repository'
-import {LocalMessageRepository} from '../services/repositories/local_message_repository'
 import {preventError} from './preventError'
 
 export const MessageRoutes = Router()
 
-const messageRepository = new LocalMessageRepository()
+const messageRepository = new PrismaMessageRepository()
 const groupMessageRepository = new LocalGroupMessageRepository()
 
 MessageRoutes.get(
