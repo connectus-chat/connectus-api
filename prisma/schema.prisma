@@ -54,11 +54,8 @@ model Message {
 }
 
 model Credential {
-  privateKey String
   publicKey  String
   userId     String  @id @map("user_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-
   // relationship
   user User @relation("UserCredentials", fields: [userId], references: [id])
 }

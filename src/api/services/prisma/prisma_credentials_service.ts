@@ -21,7 +21,6 @@ export class PrismaCredentialsService implements ICredentialsRepository {
     }
 
     async findPublicKeyByUserId(userId: string): Promise<string> {
-        console.log(userId)
         const foundKey = await prisma.credential.findFirst({
             select: {
                 publicKey: true,
@@ -32,18 +31,5 @@ export class PrismaCredentialsService implements ICredentialsRepository {
         })
         if (!foundKey) throw new HttpError('Chave não encontrada')
         return foundKey.publicKey
-    }
-
-    async findPrivateKeyByUserId(userId: string): Promise<string> {
-        const foundKey = await prisma.credential.findFirst({
-            select: {
-                privateKey: true,
-            },
-            where: {
-                userId,
-            },
-        })
-        if (!foundKey) throw new HttpError('Chave não encontrada')
-        return foundKey.privateKey
     }
 }
