@@ -1,9 +1,9 @@
 import {
     Credentials,
     Credentials2Create,
-} from '../../../domain/entities/credentials'
-import {HttpError} from '../../../domain/errors/http_error'
-import {ICredentialsRepository} from '../../../domain/ports/icredentials_repository'
+} from '../../../../domain/entities/credentials'
+import {HttpError} from '../../../../domain/errors/http_error'
+import {ICredentialsRepository} from '../../../../domain/ports/icredentials_repository'
 import {prisma} from './connection'
 
 export class PrismaCredentialsService implements ICredentialsRepository {

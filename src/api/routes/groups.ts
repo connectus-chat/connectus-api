@@ -6,12 +6,12 @@ import {DeleteUseCase} from '../../domain/use_cases/groups/delete'
 import {FetchAllByUserUseCase} from '../../domain/use_cases/groups/fetch_all_by_user'
 import {FindByIdUseCase} from '../../domain/use_cases/groups/find_by_id'
 import {UpdateUseCase} from '../../domain/use_cases/groups/update'
-import {LocalGroupRepository} from '../services/repositories/local_group_repository'
+import {PrismaGroupRepository} from '../services/repositories/prisma/prisma_group_repository'
 import {preventError} from './preventError'
 
 export const GroupRoutes = Router()
 
-const groupRepository = new LocalGroupRepository()
+const groupRepository = new PrismaGroupRepository()
 
 GroupRoutes.get(
     '/users/:userId/groups',

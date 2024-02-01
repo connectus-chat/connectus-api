@@ -2,7 +2,7 @@ import express from 'express'
 import {createServer} from 'http'
 import {Server} from 'socket.io'
 import {Logger} from './api/services/Logger'
-import {PrismaCredentialsService} from './api/services/prisma/prisma_credentials_service'
+import {PrismaCredentialsService} from './api/services/repositories/prisma/prisma_credentials_service'
 import {FindPublicKeyUseCase} from './domain/use_cases/credentials/find_public_key'
 
 export function createWebsocketServer(app: express.Express) {

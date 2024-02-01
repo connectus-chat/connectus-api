@@ -2,9 +2,10 @@ import {
     Message,
     Message2Create,
     OptionalMessage,
-} from '../../../domain/entities/message'
-import {IMessageRepository} from '../../../domain/ports/imessage_repository'
+} from '../../../../domain/entities/message'
+import {IMessageRepository} from '../../../../domain/ports/imessage_repository'
 import {prisma} from './connection'
+import {generateCryptoId} from './generate_id'
 
 export class PrismaMessageRepository implements IMessageRepository {
     async create(
@@ -15,13 +16,9 @@ export class PrismaMessageRepository implements IMessageRepository {
         const createdMessage = await prisma.message.create({
             data: {
                 ...newMessage,
-                id: crypto.randomUUID().toString(),
+                id: generateCryptoId(),
                 fromUserId,
                 toUserId,
-            },
-            include: {
-                fromUser: true,
-                toUser: true,
             },
         })
         return createdMessage

@@ -9,8 +9,8 @@ import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
 import {AsymmetricKeyService} from '../services/asymmetric_key.service'
-import {PrismaCredentialsService} from '../services/prisma/prisma_credentials_service'
-import {PrismaUserRepository} from '../services/prisma/prisma_user.repository'
+import {PrismaCredentialsService} from '../services/repositories/prisma/prisma_credentials_service'
+import {PrismaUserRepository} from '../services/repositories/prisma/prisma_user.repository'
 import {preventError} from './preventError'
 
 export const UserRoutes = Router()

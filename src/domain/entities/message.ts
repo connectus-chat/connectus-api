@@ -7,21 +7,33 @@ export interface Message {
     time: Date
     fromUserId: string
     toUserId: string
-    fromUser: User
-    toUser: User
+    fromUser?: User
+    toUser?: User
+    publicCredentials: string
 }
 
-export type Message2Create = Pick<Message, 'content' | 'time'>
+export type Message2Create = Pick<
+    Message,
+    'content' | 'time' | 'publicCredentials'
+>
 export type OptionalMessage = Message | undefined | null
 
 export interface GroupMessage
     extends Pick<
         Message,
-        'content' | 'time' | 'fromUser' | 'fromUserId' | 'id'
+        | 'content'
+        | 'time'
+        | 'fromUser'
+        | 'fromUserId'
+        | 'id'
+        | 'publicCredentials'
     > {
     groupId: string
     group?: Group
 }
 
-export type GroupMessage2Create = Pick<GroupMessage, 'content' | 'time'>
+export type GroupMessage2Create = Pick<
+    GroupMessage,
+    'content' | 'time' | 'publicCredentials'
+>
 export type OptionalGroupMessage = GroupMessage | undefined | null
