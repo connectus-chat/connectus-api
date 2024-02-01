@@ -7,12 +7,12 @@ export class CreateGroupMessageUseCase {
     async execute(
         fromId: string,
         groupId: string,
-        newMessage: GroupMessage2Create,
+        newMessage: Pick<GroupMessage2Create, 'content' | 'publicCredentials'>,
     ) {
         const createdMessage = await this.messageRepository.create(
             fromId,
             groupId,
-            newMessage,
+            {...newMessage, time: new Date()},
         ) // persist messages in database
         return createdMessage
     }
