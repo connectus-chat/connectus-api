@@ -48,6 +48,9 @@ model Message {
   toUserId      String
   createdAt     DateTime @default(now()) @map("created_at")
 
+  // security - JSON with encrypted session keys
+  publicCredentials String
+
   // relationships
   fromUser User @relation("MessageFromUser", fields: [fromUserId], references: [id])
   toUser   User @relation("MessageToUser", fields: [toUserId], references: [id])
