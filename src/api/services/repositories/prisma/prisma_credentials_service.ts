@@ -8,6 +8,21 @@ import {prisma} from './connection'
 
 export class PrismaCredentialsService implements ICredentialsRepository {
     async update(userId: string, newPublicKey: string): Promise<Credentials> {
+        const hasCredentials =
+            (await prisma.credential.count({
+                where: {
+                    userId: userId,
+                },
+            })) > 0
+
+        if (!hasCredentials)
+            return this.create(
+                {
+                    publicKey: newPublicKey,
+                },
+                userId,
+            )
+
         const updatedCredentials = await prisma.credential.update({
             data: {
                 publicKey: newPublicKey,
