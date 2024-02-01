@@ -1,6 +1,5 @@
 import {Request, Response, Router} from 'express'
 import {User2Create, User2Update} from '../../domain/entities/user'
-import {FindPrivateKeyUseCase} from '../../domain/use_cases/credentials/find_private_key'
 import {CreateUseCase} from '../../domain/use_cases/users/create'
 import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
 import {FetchAllUseCase} from '../../domain/use_cases/users/fetch_all'
@@ -10,8 +9,8 @@ import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
 import {AsymmetricKeyService} from '../services/asymmetric_key.service'
-import {PrismaCredentialsService} from '../services/prisma/prisma_credentials_service'
-import {PrismaUserRepository} from '../services/prisma/prisma_user.repository'
+import {PrismaCredentialsService} from '../services/repositories/prisma/prisma_credentials_service'
+import {PrismaUserRepository} from '../services/repositories/prisma/prisma_user.repository'
 import {preventError} from './preventError'
 
 export const UserRoutes = Router()
@@ -84,20 +83,6 @@ UserRoutes.get(
             const findUC = new FindByIdUseCase(userRepository)
             const foundUser = await findUC.execute(id)
             return foundUser
-        })
-    },
-)
-
-UserRoutes.get(
-    '/users/:id/auth/private',
-    async (request: Request<{id: string}>, response: Response) => {
-        return await preventError(response, async () => {
-            const {id} = request.params
-            const findPrivateKeyUC = new FindPrivateKeyUseCase(
-                credentialsRepository,
-            )
-            const privateKey = await findPrivateKeyUC.execute(id)
-            return {privateKey}
         })
     },
 )

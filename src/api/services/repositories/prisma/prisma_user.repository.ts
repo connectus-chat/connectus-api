@@ -1,14 +1,15 @@
-import {OptionalUser, User, User2Create} from '../../../domain/entities/user'
-import {HttpError} from '../../../domain/errors/http_error'
-import {IUserRepository} from '../../../domain/ports/iuser_repository'
+import {OptionalUser, User, User2Create} from '../../../../domain/entities/user'
+import {HttpError} from '../../../../domain/errors/http_error'
+import {IUserRepository} from '../../../../domain/ports/iuser_repository'
 import {prisma} from './connection'
+import {generateCryptoId} from './generate_id'
 
 export class PrismaUserRepository implements IUserRepository {
     async create(newUser: User2Create): Promise<OptionalUser> {
         const createdUser = await prisma.user.create({
             data: {
                 ...newUser,
-                id: crypto.randomUUID().toString(),
+                id: generateCryptoId(),
             },
         })
         return createdUser

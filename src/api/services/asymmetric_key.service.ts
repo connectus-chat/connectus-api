@@ -3,13 +3,14 @@ import {
     generateKeyPairSync,
     privateDecrypt,
     publicEncrypt,
-} from 'crypto';
+} from 'crypto'
 import {
     AsymmetricKeys,
     IAsymmetricKeyService,
-} from '../../domain/ports/iasymmetric_key_service';
+} from '../../domain/ports/iasymmetric_key_service'
 
 export class AsymmetricKeyService implements IAsymmetricKeyService {
+    // DEPRECATED
     generateKeyPair(): AsymmetricKeys {
         const {publicKey, privateKey} = generateKeyPairSync('rsa', {
             modulusLength: 2048,
@@ -27,6 +28,7 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
         }
     }
 
+    // DEPRECATED
     encrypt(publicKey: string, message: string): string {
         const encryptedMessage = publicEncrypt(
             {
@@ -36,12 +38,11 @@ export class AsymmetricKeyService implements IAsymmetricKeyService {
             },
             Buffer.from(message),
         )
-        // console.log('Encrypted: ', encryptedMessage);
         return encryptedMessage.toString('base64')
     }
 
+    // DEPRECATED
     decrypt(privateKey: string, encryptedMessage: string): string {
-        // console.log('Encrypted Message:', encryptedMessage);
         const decryptedData = privateDecrypt(
             {
                 key: privateKey,

@@ -25,6 +25,7 @@ model User {
   friendOf     User[]   @relation("friends")
   messagesFrom Message[]   @relation("MessageFromUser")
   messagesTo   Message[]    @relation("MessageToUser")
+  messages     MessageGroup[]
   adminIn      Group[]      @relation("GroupAdmin")
   credentials Credential?   @relation("UserCredentials")
 }
@@ -38,6 +39,7 @@ model Group {
   // relationships
   admin        User     @relation("GroupAdmin", fields: [adminId], references: [id])
   participants User[]   @relation("UserGroups")
+  messages     MessageGroup[]
 }
 
 model Message {
@@ -48,17 +50,33 @@ model Message {
   toUserId      String
   createdAt     DateTime @default(now()) @map("created_at")
 
+  // security - JSON with encrypted session keys
+  publicCredentials String
+
   // relationships
   fromUser User @relation("MessageFromUser", fields: [fromUserId], references: [id])
   toUser   User @relation("MessageToUser", fields: [toUserId], references: [id])
 }
 
+model MessageGroup {
+  id            String   @id @map("id")
+  content       String
+  time          DateTime @default(now())
+  fromUserId    String
+  groupId      String
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // security - JSON with encrypted session keys
+  publicCredentials String
+
+  // relationships
+  fromUser User @relation(fields: [fromUserId], references: [id])
+  group   Group @relation(fields: [groupId], references: [id])
+}
+
 model Credential {
-  privateKey String
   publicKey  String
   userId     String  @id @map("user_id")
-  createdAt  DateTime @default(now()) @map("created_at")
-
   // relationship
   user User @relation("UserCredentials", fields: [userId], references: [id])
 }
