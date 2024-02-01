@@ -1,5 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {User2Create, User2Update} from '../../domain/entities/user'
+import {UpdatePublicKey} from '../../domain/use_cases/credentials/update'
 import {CreateUseCase} from '../../domain/use_cases/users/create'
 import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
 import {FetchAllUseCase} from '../../domain/use_cases/users/fetch_all'
@@ -8,7 +9,6 @@ import {FollowUseCase} from '../../domain/use_cases/users/follow'
 import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
-import {AsymmetricKeyService} from '../services/asymmetric_key.service'
 import {PrismaCredentialsService} from '../services/repositories/prisma/prisma_credentials_service'
 import {PrismaUserRepository} from '../services/repositories/prisma/prisma_user.repository'
 import {preventError} from './preventError'
@@ -16,8 +16,7 @@ import {preventError} from './preventError'
 export const UserRoutes = Router()
 
 const userRepository = new PrismaUserRepository()
-const credentialsRepository = new PrismaCredentialsService()
-const asymmetricKeyService = new AsymmetricKeyService()
+const credentialService = new PrismaCredentialsService()
 
 UserRoutes.get('/users', async (_: Request, response: Response) => {
     return await preventError(response, async () => {
@@ -32,11 +31,7 @@ UserRoutes.post(
     async (req: Request<unknown, unknown, User2Create>, response: Response) => {
         return await preventError(response, async () => {
             const data = req.body
-            const createUC = new CreateUseCase(
-                userRepository,
-                credentialsRepository,
-                asymmetricKeyService,
-            )
+            const createUC = new CreateUseCase(userRepository)
             const createdUser = await createUC.execute(data)
             return createdUser
         })
@@ -129,6 +124,25 @@ UserRoutes.post(
             const unfollowUC = new UnfollowUseCase(userRepository)
             const updatedUser = await unfollowUC.execute(id, userId)
             return updatedUser
+        })
+    },
+)
+
+UserRoutes.patch(
+    '/users/:id/credentials',
+    async (
+        request: Request<{id: string}, unknown, {publicKey: string}>,
+        response: Response,
+    ) => {
+        return await preventError(response, async () => {
+            const data = request.body
+            const {id} = request.params
+            const updateUC = new UpdatePublicKey(credentialService)
+            const updatedCredentials = await updateUC.execute(
+                id,
+                data.publicKey,
+            )
+            return updatedCredentials
         })
     },
 )

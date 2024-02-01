@@ -6,4 +6,5 @@ export interface ICredentialsRepository {
         userId: string,
     ): Promise<Credentials>
     findPublicKeyByUserId(userId: string): Promise<string>
+    update(userId: string, newPublicKey: string): Promise<Credentials>
 }
