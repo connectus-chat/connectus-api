@@ -7,6 +7,21 @@ import {ICredentialsRepository} from '../../../../domain/ports/icredentials_repo
 import {prisma} from './connection'
 
 export class PrismaCredentialsService implements ICredentialsRepository {
+    async update(userId: string, newPublicKey: string): Promise<Credentials> {
+        const updatedCredentials = await prisma.credential.update({
+            data: {
+                publicKey: newPublicKey,
+            },
+            where: {
+                userId,
+            },
+            include: {
+                user: true,
+            },
+        })
+        return updatedCredentials
+    }
+
     async create(
         newCredentials: Credentials2Create,
         userId: string,
