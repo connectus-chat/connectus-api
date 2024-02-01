@@ -1,5 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {User2Create, User2Update} from '../../domain/entities/user'
+import {FindPublicKeyUseCase} from '../../domain/use_cases/credentials/find_public_key'
 import {UpdatePublicKey} from '../../domain/use_cases/credentials/update'
 import {CreateUseCase} from '../../domain/use_cases/users/create'
 import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
@@ -143,6 +144,18 @@ UserRoutes.patch(
                 data.publicKey,
             )
             return updatedCredentials
+        })
+    },
+)
+
+UserRoutes.get(
+    '/users/:id/credentials',
+    async (request: Request<{id: string}>, response: Response) => {
+        return await preventError(response, async () => {
+            const {id} = request.params
+            const findPublicKeyUC = new FindPublicKeyUseCase(credentialService)
+            const publicKey = await findPublicKeyUC.execute(id)
+            return publicKey
         })
     },
 )

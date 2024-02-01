@@ -57,7 +57,7 @@ export function setDefaultEvents(io: Server) {
                 // Emite evento com a chave pública de quem confirmou conexão
                 io.to(`${friendId}.${id}`).emit('i-am-connected', {
                     id,
-                    whoWantsKnowId: friendId,
+                    whoWants2KnowId: friendId,
                     publicKey: userPublicKey,
                 })
             },
@@ -71,7 +71,7 @@ export function setDefaultEvents(io: Server) {
                 encryptedMessage: string
                 encryptedSessionKeys: {
                     senderEncryptedSessionKey: string
-                    receiverEncryptedSessionKey: string
+                    recipientEncryptedSessionKey: string
                 }
             }) => {
                 const {id, friendId, encryptedMessage, encryptedSessionKeys} =
@@ -91,6 +91,7 @@ export function setDefaultEvents(io: Server) {
                 io.to(`${friendId}.${id}`).emit('receive-message', {
                     senderId: id,
                     encryptedMessage,
+                    encryptedSessionKeys,
                 })
             },
         )
@@ -114,7 +115,7 @@ export function setDefaultEvents(io: Server) {
             socket.join(groupId)
             // Emite evento para saber todos que estão conectados naquela sala.
             io.to(groupId).emit('who-is-connected', {
-                whoWantsKnowId: id,
+                whoWants2KnowId: id,
             })
         })
 
@@ -123,16 +124,16 @@ export function setDefaultEvents(io: Server) {
             async (data: {
                 id: string
                 groupId: string
-                whoWantsKnowId: string
+                whoWants2KnowId: string
             }) => {
-                const {id, groupId, whoWantsKnowId} = data
+                const {id, groupId, whoWants2KnowId} = data
                 const findPublicKey = new FindPublicKeyUseCase(
                     new PrismaCredentialsService(),
                 )
                 const userPublicKey = await findPublicKey.execute(id)
                 // Emite evento com a chave pública de quem confirmou conexão
                 io.to(groupId).emit('i-am-connected', {
-                    whoWantsKnowId,
+                    whoWants2KnowId,
                     id,
                     publicKey: userPublicKey,
                 })
@@ -168,6 +169,7 @@ export function setDefaultEvents(io: Server) {
                 io.to(groupId).emit('receive-message', {
                     senderId: id,
                     encryptedMessage,
+                    encryptedSessionKeys,
                 })
             },
         )
