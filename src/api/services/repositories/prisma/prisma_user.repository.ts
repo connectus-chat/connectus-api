@@ -33,6 +33,18 @@ export class PrismaUserRepository implements IUserRepository {
         return users
     }
 
+    async fetchFriends(userId: string): Promise<User[]> {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: userId
+          },
+          include: {
+            friends: true
+          }
+        })
+        return user.friends
+      }
+
     async findById(id: string): Promise<OptionalUser> {
         const foundUser = await prisma.user.findUnique({
             where: {

@@ -13,6 +13,7 @@ import {UpdateUseCase} from '../../domain/use_cases/users/update'
 import {PrismaCredentialsService} from '../services/repositories/prisma/prisma_credentials_service'
 import {PrismaUserRepository} from '../services/repositories/prisma/prisma_user.repository'
 import {preventError} from './preventError'
+import { FetchFriendsUseCase } from '../../domain/use_cases/users/fetch_friends'
 
 export const UserRoutes = Router()
 
@@ -23,6 +24,15 @@ UserRoutes.get('/users', async (_: Request, response: Response) => {
     return await preventError(response, async () => {
         const fetchAllUC = new FetchAllUseCase(userRepository)
         const users = await fetchAllUC.execute()
+        return users
+    })
+})
+
+UserRoutes.get('/users/:id/friends', async (request: Request<{id: string}>, response: Response) => {
+    return await preventError(response, async () => {
+        const {id} = request.params
+        const fetchFriendsUC = new FetchFriendsUseCase(userRepository)
+        const users = await fetchFriendsUC.execute(id)
         return users
     })
 })
