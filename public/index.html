@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <main class="main">
+        <h1>Painel de Controle - Chaves de Acesso</h1>
+        <div class="actions">
+            <button class="bt primary generate-key">Criar Chaves</button>
+        </div>
+        <ul class="keys">
+            <li class="key">Key GRAAAAAAAAAAAAAANDE</li>
+        </ul>
+    </main>
+    <script>
+        const button = document.querySelector('button.generate-key')
+        const keysDiv = document.querySelector('.keys')
+        let keys = []
+
+        async function main() {
+            keys = await getKeys()
+            addEvents()
+        }
+
+        function addEvents() {
+            button.addEventListener('click', generateKey)
+            keys.map(renderKey)
+        }
+
+        function renderKey(key = "") {
+            keysDiv.innerHTML += `<li class="key">${key}</li>`
+        }
+
+        async function generateKey() {
+        }
+
+    </script>
+</body>
+
+</html>
