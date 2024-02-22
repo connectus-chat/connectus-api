@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "tsnd src/index.ts",
         "test": "jest",
-        "build": "npm run build && prisma migrate dev",
+        "build": "prisma migrate dev && npm run dev",
         "lint": "eslint src",
         "db:migrate": "prisma migrate dev"
     },
