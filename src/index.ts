@@ -16,7 +16,7 @@ app.use(
     }),
 )
 
-app.use('/', (_, resp) => {
+app.get('/', (_, resp) => {
     return resp.json({
         name: 'Connectus API v2.0',
         description: '🔐 A Node.js Web API to chat safely',
