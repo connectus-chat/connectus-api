@@ -5,37 +5,46 @@ import {UpdatePublicKey} from '../../domain/use_cases/credentials/update'
 import {CreateUseCase} from '../../domain/use_cases/users/create'
 import {DeleteByIdUseCase} from '../../domain/use_cases/users/delete_by_id'
 import {FetchAllUseCase} from '../../domain/use_cases/users/fetch_all'
+import {FetchFriendsUseCase} from '../../domain/use_cases/users/fetch_friends'
 import {FindByIdUseCase} from '../../domain/use_cases/users/find_by_id'
 import {FollowUseCase} from '../../domain/use_cases/users/follow'
 import {LoginUseCase} from '../../domain/use_cases/users/login'
 import {UnfollowUseCase} from '../../domain/use_cases/users/unfollow'
 import {UpdateUseCase} from '../../domain/use_cases/users/update'
+import {useAuthorization} from '../middlewares/use_authorization'
 import {PrismaCredentialsService} from '../services/repositories/prisma/prisma_credentials_service'
 import {PrismaUserRepository} from '../services/repositories/prisma/prisma_user.repository'
 import {preventError} from './preventError'
-import { FetchFriendsUseCase } from '../../domain/use_cases/users/fetch_friends'
 
 export const UserRoutes = Router()
 
 const userRepository = new PrismaUserRepository()
 const credentialService = new PrismaCredentialsService()
 
-UserRoutes.get('/users', async (_: Request, response: Response) => {
-    return await preventError(response, async () => {
-        const fetchAllUC = new FetchAllUseCase(userRepository)
-        const users = await fetchAllUC.execute()
-        return users
-    })
-})
+UserRoutes.get(
+    '/users',
+    useAuthorization,
+    async (_: Request, response: Response) => {
+        return await preventError(response, async () => {
+            const fetchAllUC = new FetchAllUseCase(userRepository)
+            const users = await fetchAllUC.execute()
+            return users
+        })
+    },
+)
 
-UserRoutes.get('/users/:id/friends', async (request: Request<{id: string}>, response: Response) => {
-    return await preventError(response, async () => {
-        const {id} = request.params
-        const fetchFriendsUC = new FetchFriendsUseCase(userRepository)
-        const users = await fetchFriendsUC.execute(id)
-        return users
-    })
-})
+UserRoutes.get(
+    '/users/:id/friends',
+    useAuthorization,
+    async (request: Request<{id: string}>, response: Response) => {
+        return await preventError(response, async () => {
+            const {id} = request.params
+            const fetchFriendsUC = new FetchFriendsUseCase(userRepository)
+            const users = await fetchFriendsUC.execute(id)
+            return users
+        })
+    },
+)
 
 UserRoutes.post(
     '/users',
@@ -71,6 +80,7 @@ UserRoutes.post(
 
 UserRoutes.delete(
     '/users/:id',
+    useAuthorization,
     async (request: Request<{id: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {id} = request.params
@@ -83,6 +93,7 @@ UserRoutes.delete(
 
 UserRoutes.get(
     '/users/:id',
+    useAuthorization,
     async (request: Request<{id: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {id} = request.params
@@ -95,6 +106,7 @@ UserRoutes.get(
 
 UserRoutes.patch(
     '/users/:id',
+    useAuthorization,
     async (
         request: Request<{id: string}, unknown, User2Update>,
         response: Response,
@@ -111,6 +123,7 @@ UserRoutes.patch(
 
 UserRoutes.post(
     '/users/:id/follow/:userId',
+    useAuthorization,
     async (
         request: Request<{id: string; userId: string}>,
         response: Response,
@@ -126,6 +139,7 @@ UserRoutes.post(
 
 UserRoutes.post(
     '/users/:id/unfollow/:userId',
+    useAuthorization,
     async (
         request: Request<{id: string; userId: string}>,
         response: Response,
@@ -141,6 +155,7 @@ UserRoutes.post(
 
 UserRoutes.patch(
     '/users/:id/credentials',
+    useAuthorization,
     async (
         request: Request<{id: string}, unknown, {publicKey: string}>,
         response: Response,
@@ -160,6 +175,7 @@ UserRoutes.patch(
 
 UserRoutes.get(
     '/users/:id/credentials',
+    useAuthorization,
     async (request: Request<{id: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {id} = request.params

@@ -1,6 +1,7 @@
 import {Request, Response, Router} from 'express'
 import {FetchAllUseCase} from '../../domain/use_cases/messages/fetch_all'
 import {FetchAllGroupMessagesUseCase} from '../../domain/use_cases/messages/fetch_all_group_messages'
+import {useAuthorization} from '../middlewares/use_authorization'
 import {PrismaMessageGroupRepository} from '../services/repositories/prisma/prisma_message_group_repository'
 import {PrismaMessageRepository} from '../services/repositories/prisma/prisma_message_repository'
 import {preventError} from './preventError'
@@ -12,6 +13,7 @@ const groupMessageRepository = new PrismaMessageGroupRepository()
 
 MessageRoutes.get(
     '/users/:fromId/:toId/messages',
+    useAuthorization,
     async (
         request: Request<{fromId: string; toId: string}>,
         response: Response,
@@ -27,6 +29,7 @@ MessageRoutes.get(
 
 MessageRoutes.get(
     '/groups/:groupId/messages',
+    useAuthorization,
     async (request: Request<{groupId: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {groupId} = request.params

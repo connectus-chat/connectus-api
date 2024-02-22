@@ -6,6 +6,7 @@ import {DeleteUseCase} from '../../domain/use_cases/groups/delete'
 import {FetchAllByUserUseCase} from '../../domain/use_cases/groups/fetch_all_by_user'
 import {FindByIdUseCase} from '../../domain/use_cases/groups/find_by_id'
 import {UpdateUseCase} from '../../domain/use_cases/groups/update'
+import {useAuthorization} from '../middlewares/use_authorization'
 import {PrismaGroupRepository} from '../services/repositories/prisma/prisma_group_repository'
 import {preventError} from './preventError'
 
@@ -15,6 +16,7 @@ const groupRepository = new PrismaGroupRepository()
 
 GroupRoutes.get(
     '/users/:userId/groups',
+    useAuthorization,
     async (request: Request<{userId: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {userId} = request.params
@@ -27,6 +29,7 @@ GroupRoutes.get(
 
 GroupRoutes.get(
     '/users/groups/:id',
+    useAuthorization,
     async (request: Request<{id: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {id} = request.params
@@ -39,6 +42,7 @@ GroupRoutes.get(
 
 GroupRoutes.delete(
     '/users/groups/:id',
+    useAuthorization,
     async (request: Request<{id: string}>, response: Response) => {
         return await preventError(response, async () => {
             const {id} = request.params
@@ -51,6 +55,7 @@ GroupRoutes.delete(
 
 GroupRoutes.post(
     '/users/:adminId/groups',
+    useAuthorization,
     async (
         request: Request<{adminId: string}, unknown, Group2Create>,
         response: Response,
@@ -67,6 +72,7 @@ GroupRoutes.post(
 
 GroupRoutes.post(
     '/users/:userId/groups/:id',
+    useAuthorization,
     async (
         request: Request<{id: string; userId: string}>,
         response: Response,
@@ -82,6 +88,7 @@ GroupRoutes.post(
 
 GroupRoutes.patch(
     '/users/groups/:id',
+    useAuthorization,
     async (
         request: Request<{id: string}, unknown, Group2Update>,
         response: Response,
