@@ -15,6 +15,15 @@ app.use(
         credentials: true,
     }),
 )
+
+app.use('/', (_, resp) => {
+    return resp.json({
+        name: 'Connectus API v2.0',
+        description: '🔐 A Node.js Web API to chat safely',
+        nowIs: new Date(),
+    })
+})
+app.use('/dashboard', express.static('public'))
 app.use(router)
 
 const PORT = process.env.PORT || 3000

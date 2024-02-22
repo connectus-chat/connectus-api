@@ -1,8 +1,8 @@
-import {OptionalUser, User, User2Create} from '../../../../domain/entities/user'
-import {HttpError} from '../../../../domain/errors/http_error'
-import {IUserRepository} from '../../../../domain/ports/iuser_repository'
-import {prisma} from './connection'
-import {generateCryptoId} from './generate_id'
+import { OptionalUser, User, User2Create } from '../../../../domain/entities/user'
+import { HttpError } from '../../../../domain/errors/http_error'
+import { IUserRepository } from '../../../../domain/ports/iuser_repository'
+import { prisma } from './connection'
+import { generateCryptoId } from './generate_id'
 
 export class PrismaUserRepository implements IUserRepository {
     async create(newUser: User2Create): Promise<OptionalUser> {
@@ -42,6 +42,7 @@ export class PrismaUserRepository implements IUserRepository {
             friends: true
           }
         })
+        if(!user) throw new HttpError('Não foi possível buscar por amigos.')
         return user.friends
       }
 
